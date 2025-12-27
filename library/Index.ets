@@ -1,1 +1,1 @@
-export { MainPage } from './src/main/ets/components/MainPage';
+export { getByName, getAllByName, getHostName } from 'liblibrary.so';

@@ -11,5 +11,11 @@ endif()
 include_directories(${NATIVERENDER_ROOT_PATH}
                     ${NATIVERENDER_ROOT_PATH}/include)
 
-add_library(library SHARED napi_init.cpp)
-target_link_libraries(library PUBLIC libace_napi.z.so)
+add_library(library SHARED napi_init.cpp
+socket/dns.cpp
+socket/dns.h
+utils/hilog_helper.h
+utils/hilog_helper.cpp
+error/network_exception.h
+error/network_exception.cpp)
+target_link_libraries(library PUBLIC libace_napi.z.so libhilog_ndk.z.so)
