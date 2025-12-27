@@ -131,11 +131,15 @@ std::vector<InetAddress> InetAddress::getAllByName(const std::string& host){
             family = InetFamily::Ipv6;
         }
         addresses.emplace_back(ipstr, net_port, family);
-        LOGD("Found address: %{public}s:%{public}u--%{public}d--%{public}d--%{public}u", ipstr, net_port, p->ai_socktype, p->ai_protocol, family);
+        LOGD("Found address: %{public}s:%{public}u -- socktype:%{public}d -- protocol:%{public}d -- family:%{public}u", ipstr, net_port, p->ai_socktype, p->ai_protocol, family);
     }
     return addresses;
 }
 
 std::string InetAddress::getHostName(const std::string& ip){
-    return "";
+    in_addr addr;
+    inet_pton(AF_INET, ip.c_str(), &addr);
+    struct hostent *host = gethostbyaddr(&addr, sizeof addr, AF_INET);
+    LOGD("Found hostname: %{public}s", host->h_name);
+    return std::string(host->h_name);
 }

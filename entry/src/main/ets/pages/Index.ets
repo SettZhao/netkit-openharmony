@@ -21,7 +21,7 @@ struct Index {
           this.message = 'Welcome';
           hilog.info(DOMAIN, 'testTag', 'getByName for www.baidu.com: %{public}s', getByName("www.baidu.com"));
           hilog.info(DOMAIN, 'testTag', 'getAllByName for www.baidu.com: %{public}s', JSON.stringify(getAllByName("www.baidu.com")));
-          hilog.info(DOMAIN, 'testTag', 'getHostName for www.baidu.com: %{public}s', JSON.stringify(getHostName("www.baidu.com")));
+          hilog.info(DOMAIN, 'testTag', 'getHostName for 8.8.8.8: %{public}s', JSON.stringify(getHostName("8.8.8.8")));
 
         })
     }

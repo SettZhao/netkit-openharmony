@@ -90,7 +90,7 @@ static napi_value GetHostName(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     if (argc < 1) {
-        LOGE("GetAllByName: Invalid argument count, expected 2, got %{public}zu", argc);
+        LOGE("GetHostName: Invalid argument count, expected 2, got %{public}zu", argc);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
@@ -104,7 +104,7 @@ static napi_value GetHostName(napi_env env, napi_callback_info info)
     std::string ip(ipBuffer);
     delete[] ipBuffer;
 
-    LOGD("GetAllByName called: host=%{public}s", ip.c_str());
+    LOGD("GetHostName called: host=%{public}s", ip.c_str());
 
     try {
         auto host = InetAddress::getHostName(ip);
@@ -112,7 +112,7 @@ static napi_value GetHostName(napi_env env, napi_callback_info info)
         napi_create_string_utf8(env, host.c_str(), NAPI_AUTO_LENGTH, &result);
         return result;
     } catch (const std::exception& e) {
-        LOGE("GetAllByName failed: %{public}s", e.what());
+        LOGE("GetHostName failed: %{public}s", e.what());
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
