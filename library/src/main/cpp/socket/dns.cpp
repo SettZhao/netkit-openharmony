@@ -21,7 +21,7 @@ struct AddrInfoDeleter {
 };
 
 // 构造函数
-InetAddress::InetAddress(std::string ip, uint16_t port, InetFamily family): ip_(ip), port_(port), family_(family){
+InetAddress::InetAddress(const std::string& ip, uint16_t port, InetFamily family): ip_(ip), port_(port), family_(family){
     if (ip_.empty()) {
         throw std::invalid_argument("Invalid InetAddress parameters");
     }
@@ -71,7 +71,8 @@ InetAddress& InetAddress::operator=(InetAddress&& other) noexcept {
 // dns查询
 InetAddress InetAddress::getByName(const std::string& host){
     int status;
-    addrinfo hints{}, *res;
+    addrinfo hints, *res;
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC; // 不指定版本
     hints.ai_socktype = SOCK_STREAM; // TCP类型
     if ((status = getaddrinfo(host.c_str(), nullptr, &hints, &res)) != 0){
@@ -102,7 +103,8 @@ InetAddress InetAddress::getByName(const std::string& host){
 // dns查询
 std::vector<InetAddress> InetAddress::getAllByName(const std::string& host){
     int status;
-    addrinfo hints{}, *res;
+    addrinfo hints, *res;
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC; // 不指定版本
     hints.ai_socktype = SOCK_STREAM; // TCP类型
     if ((status = getaddrinfo(host.c_str(), nullptr, &hints, &res)) != 0){
@@ -137,9 +139,27 @@ std::vector<InetAddress> InetAddress::getAllByName(const std::string& host){
 }
 
 std::string InetAddress::getHostName(const std::string& ip){
-    in_addr addr;
-    inet_pton(AF_INET, ip.c_str(), &addr);
-    struct hostent *host = gethostbyaddr(&addr, sizeof addr, AF_INET);
-    LOGD("Found hostname: %{public}s", host->h_name);
-    return std::string(host->h_name);
+    sockaddr_in sa4;
+    sockaddr_in6 sa6;
+    
+    if (inet_pton(AF_INET, ip.c_str(), &sa4.sin_addr)){
+        sa4.sin_family = AF_INET;
+        char host[NI_MAXHOST];
+        int ret = getnameinfo((sockaddr*)&sa4, sizeof sa4, host, sizeof host, nullptr, 0, NI_NAMEREQD);
+        if (ret == 0){
+            LOGD("Found hostname: %{public}s", host);
+            return std::string(host);
+        }
+    }
+    if (inet_pton(AF_INET6, ip.c_str(), &sa6.sin6_addr)){
+        sa6.sin6_family = AF_INET6;
+        char host [NI_MAXHOST];
+        int ret = getnameinfo((sockaddr*)&sa6, sizeof sa6, host, sizeof host, nullptr, 0, NI_NAMEREQD);
+        if (ret == 0){
+            LOGD("Found hostname: %{public}s", host);
+            return std::string(host);
+        }
+    }
+    LOGE("Failed to resolve hostname for IP: %{public}s", ip.c_str());
+    return "";
 }

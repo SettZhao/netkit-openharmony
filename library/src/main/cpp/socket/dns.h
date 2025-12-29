@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 enum class InetFamily : uint8_t{
     Ipv4 = 1,
@@ -18,7 +19,7 @@ enum class InetFamily : uint8_t{
 class InetAddress {
 public:
     
-    InetAddress(std::string ip, uint16_t port = 0, InetFamily family = InetFamily::Ipv4);
+    InetAddress(const std::string& ip, uint16_t port = 0, InetFamily family = InetFamily::Ipv4);
     ~InetAddress();
     InetAddress(const InetAddress& other);
     InetAddress(InetAddress&& other) noexcept;
@@ -28,10 +29,10 @@ public:
     static std::vector<InetAddress> getAllByName(const std::string& host);
     static std::string getHostName(const std::string& ip);
     
-    std::string getIP() const {return ip_;}
+    const std::string& getIP() const {return ip_;}
     uint16_t getPort() const {return port_;}
-    std::string getHost() const {return host_;}
-    InetFamily getFamilt() const {return family_;}
+    const std::string& getHost() const {return host_;}
+    InetFamily getFamily() const {return family_;}
     
 private:
     std::string ip_;

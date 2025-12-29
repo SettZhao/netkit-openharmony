@@ -10,7 +10,7 @@ static napi_value GetByName(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     if (argc < 1) {
-        LOGE("GetByName: Invalid argument count, expected 2, got %{public}zu", argc);
+        LOGE("GetByName: Invalid argument count, expected 1, got %{public}zu", argc);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
@@ -19,10 +19,8 @@ static napi_value GetByName(napi_env env, napi_callback_info info)
     // 获取第一个参数 (host)
     size_t hostLen = 0;
     napi_get_value_string_utf8(env, args[0], nullptr, 0, &hostLen);
-    char* hostBuffer = new char[hostLen + 1];
-    napi_get_value_string_utf8(env, args[0], hostBuffer, hostLen + 1, &hostLen);
-    std::string host(hostBuffer);
-    delete[] hostBuffer;
+    std::string host(hostLen, '\0');
+    napi_get_value_string_utf8(env, args[0], &host[0], hostLen + 1, &hostLen);
 
     LOGD("GetByName called: host=%{public}s", host.c_str());
 
@@ -47,7 +45,7 @@ static napi_value GetAllByName(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     if (argc < 1) {
-        LOGE("GetAllByName: Invalid argument count, expected 2, got %{public}zu", argc);
+        LOGE("GetAllByName: Invalid argument count, expected 1, got %{public}zu", argc);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
@@ -56,10 +54,8 @@ static napi_value GetAllByName(napi_env env, napi_callback_info info)
     // 获取第一个参数 (host)
     size_t hostLen = 0;
     napi_get_value_string_utf8(env, args[0], nullptr, 0, &hostLen);
-    char* hostBuffer = new char[hostLen + 1];
-    napi_get_value_string_utf8(env, args[0], hostBuffer, hostLen + 1, &hostLen);
-    std::string host(hostBuffer);
-    delete[] hostBuffer;
+    std::string host(hostLen, '\0');
+    napi_get_value_string_utf8(env, args[0], &host[0], hostLen + 1, &hostLen);
 
     LOGD("GetAllByName called: host=%{public}s", host.c_str());
 
@@ -90,19 +86,17 @@ static napi_value GetHostName(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
 
     if (argc < 1) {
-        LOGE("GetHostName: Invalid argument count, expected 2, got %{public}zu", argc);
+        LOGE("GetHostName: Invalid argument count, expected 1, got %{public}zu", argc);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
     }
 
-    // 获取第一个参数 (host)
+    // 获取第一个参数 (ip)
     size_t ipLen = 0;
     napi_get_value_string_utf8(env, args[0], nullptr, 0, &ipLen);
-    char* ipBuffer = new char[ipLen + 1];
-    napi_get_value_string_utf8(env, args[0], ipBuffer, ipLen + 1, &ipLen);
-    std::string ip(ipBuffer);
-    delete[] ipBuffer;
+    std::string ip(ipLen, '\0');
+    napi_get_value_string_utf8(env, args[0], &ip[0], ipLen + 1, &ipLen);
 
     LOGD("GetHostName called: host=%{public}s", ip.c_str());
 
